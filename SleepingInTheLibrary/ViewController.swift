@@ -42,6 +42,43 @@ class ViewController: UIViewController {
     
     private func getImageFromFlickr() {
         
+        let methodParameters = [
+            Constants.FlickrParameterKeys.Method: Constants.FlickrParameterValues.GalleryPhotosMethod,
+            Constants.FlickrParameterKeys.APIKey : Constants.FlickrParameterValues.APIKey,
+            Constants.FlickrParameterKeys.GalleryID : Constants.FlickrParameterValues.GalleryID,
+            Constants.FlickrParameterKeys.Extras : Constants.FlickrParameterValues.MediumURL,
+            Constants.FlickrParameterKeys.Format : Constants.FlickrParameterValues.ResponseFormat,
+            Constants.FlickrParameterKeys.NoJSONCallback : Constants.FlickrParameterValues.DisableJSONCallback]
+        
         // TODO: Write the network code here!
+        let url = NSURL(string: <#T##String#>)
     }
+
+    private func escapedParameters(parameters: [String:AnyObject]) -> String {
+        
+        // if a parameter isn't found, assign it a blank string
+        if parameters.isEmpty {
+            return ""
+        } else {
+            // if a parameter is found
+            var keyValuePairs = [String]()
+            
+            for (key, value) in parameters {
+                
+                // make sure all returned values are strings
+                let stringValue = "\(value)"
+                
+                // escape it -- converts string to ASCII URL compliant string
+                let escapedValue = stringValue.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
+                
+                // append it to the array
+                keyValuePairs.append(key + "=" + "\(escapedValue!)")
+            }
+            
+            // return the array with & in between to build the URL
+            return "?\(keyValuePairs.joinWithSeparator("&"))"
+            
+        }
+    }
+    
 }
