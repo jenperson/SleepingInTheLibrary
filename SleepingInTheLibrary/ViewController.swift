@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Foundation
 
 // MARK: - ViewController: UIViewController
 
@@ -50,8 +51,33 @@ class ViewController: UIViewController {
             Constants.FlickrParameterKeys.Format : Constants.FlickrParameterValues.ResponseFormat,
             Constants.FlickrParameterKeys.NoJSONCallback : Constants.FlickrParameterValues.DisableJSONCallback]
         
-        // TODO: Write the network code here!
-        let url = NSURL(string: <#T##String#>)
+        let urlString = Constants.Flickr.APIBaseURL + escapedParameters(methodParameters)
+        let url = NSURL(string: urlString)!
+        let request = NSURLRequest(URL: url)
+        
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request){ (data, response, error) in
+            // if no error is found
+            if error == nil {
+                // unwrap data found
+                if let data = data {
+                    
+                    let parsedResult : AnyObject!
+                    do  {
+                    parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+                    } catch {
+                        //displayError("Could not parse the data as JSON: '\(data)' ")
+                        print("Could not parse the data as JSON: '\(data)' ")
+                        return
+                    }
+                    
+                    print(parsedResult)
+                    
+                }
+            }
+        }
+        
+        task.resume()
+        
     }
 
     private func escapedParameters(parameters: [String:AnyObject]) -> String {
