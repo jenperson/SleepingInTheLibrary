@@ -69,15 +69,35 @@ class ViewController: UIViewController {
                         print("Could not parse the data as JSON: '\(data)' ")
                         return
                     }
-                    // check to see if the result worked.
-                    print(parsedResult)
                     
                     // unwrapping value in case a dictionary/key value isn't found
                     if let photosDictionary =
-                        parsedResult[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject] {
-                         
-                            // check to see if the result worked
-                         print(photosDictionary)
+                        parsedResult[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject],
+                            photoArray = photosDictionary["photo"] as?
+                                [[String:AnyObject]] {
+                                    
+                            // choose a random member of the array
+                            let randomPhotoIndex = Int(arc4random_uniform(UInt32(photoArray.count)))
+                            let photoDictionary = photoArray[randomPhotoIndex] as [String:AnyObject]
+                            
+                            // get the image URL and photo title from the random member of the array
+                            if let imageURLString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String,
+                                let photoTitle = photoDictionary[Constants.FlickrResponseKeys.Title] as? String {
+                                    
+                                    // show the image in the image view
+                                    let imageURL = NSURL(string: imageURLString)
+                                    if let imageData = NSData(contentsOfURL: imageURL!){
+                                        
+                                        performUIUpdatesOnMain(){
+                                            self.photoImageView.image = UIImage(data: imageData)
+                                            self.photoTitleLabel.text = photoTitle
+                                            // so user can grab another image if desired
+                                            self.setUIEnabled(true)
+                                        }
+                                    }
+                                }
+                                    
+                                    
                     }
                     
                 }
