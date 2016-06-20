@@ -69,8 +69,16 @@ class ViewController: UIViewController {
                         print("Could not parse the data as JSON: '\(data)' ")
                         return
                     }
-                    
+                    // check to see if the result worked.
                     print(parsedResult)
+                    
+                    // unwrapping value in case a dictionary/key value isn't found
+                    if let photosDictionary =
+                        parsedResult[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject] {
+                         
+                            // check to see if the result worked
+                         print(photosDictionary)
+                    }
                     
                 }
             }
